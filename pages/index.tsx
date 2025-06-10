@@ -2,11 +2,11 @@ import { useState } from 'react';
 
 export default function Home() {
   const [imageUrl, setImageUrl] = useState('');
-  const [resultImage, setResultImage] = useState(null);
+  const [resultImage, setResultImage] = useState < string | null > (null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState < string | null > (null);
   
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
@@ -14,9 +14,7 @@ export default function Home() {
     try {
       const response = await fetch('/api/removebg', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageUrl }),
       });
       
@@ -27,7 +25,7 @@ export default function Home() {
       
       const blob = await response.blob();
       setResultImage(URL.createObjectURL(blob));
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message);
     } finally {
       setIsLoading(false);
@@ -37,7 +35,6 @@ export default function Home() {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
       <h1>Background Removal API</h1>
-      
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -63,43 +60,17 @@ export default function Home() {
         </button>
       </form>
 
-      {error && (
-        <div style={{ color: 'red', margin: '1rem 0' }}>
-          Error: {error}
-        </div>
-      )}
-
+      {error && <div style={{ color: 'red', margin: '1rem 0' }}>Error: {error}</div>}
       {resultImage && (
         <div style={{ marginTop: '2rem' }}>
           <h2>Result:</h2>
           <img 
             src={resultImage} 
             alt="Result" 
-            style={{ 
-              maxWidth: '100%', 
-              border: '1px solid #ddd',
-              marginTop: '1rem'
-            }} 
+            style={{ maxWidth: '100%', border: '1px solid #ddd', marginTop: '1rem' }} 
           />
         </div>
       )}
-
-      <div style={{ marginTop: '3rem', color: '#666' }}>
-        <h3>How to use the API:</h3>
-        <pre style={{
-          background: '#f5f5f5',
-          padding: '1rem',
-          borderRadius: '4px',
-          overflowX: 'auto'
-        }}>
-{`POST /api/removebg
-Content-Type: application/json
-
-{
-  "imageUrl": "https://example.com/your-image.jpg"
-}`}
-        </pre>
-      </div>
     </div>
   );
 }
