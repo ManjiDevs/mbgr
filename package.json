@@ -1,0 +1,9 @@
+{
+  "name": "mbgr-api",
+  "type": "module",
+  "dependencies": {
+    "@imgly/background-removal": "^1.2.4",
+    "formidable": "^2.0.1",
+    "fs": "^0.0.1-security"
+  }
+}
